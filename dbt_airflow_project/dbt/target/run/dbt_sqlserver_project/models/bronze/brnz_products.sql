@@ -1,10 +1,10 @@
 USE [AdventureWorks2014];
-    
-    
 
-    
 
-    
+
+
+
+
     USE [AdventureWorks2014];
     EXEC('
         create view "bronze"."brnz_products__dbt_tmp" as with product as (
@@ -50,4 +50,3 @@ staged as (
 
 select * from staged;
     ')
-

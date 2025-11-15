@@ -1,13 +1,13 @@
 USE [AdventureWorks2014];
-    
-    
 
-    
 
-    
+
+
+
+
     USE [AdventureWorks2014];
     EXEC('
-        create view "dbo"."stg_customers__dbt_tmp" as 
+        create view "dbo"."stg_customers__dbt_tmp" as
 
 with source as (
     select * from "AdventureWorks2014"."Sales"."Customer"
@@ -33,4 +33,3 @@ staged as (
 
 select * from staged;
     ')
-

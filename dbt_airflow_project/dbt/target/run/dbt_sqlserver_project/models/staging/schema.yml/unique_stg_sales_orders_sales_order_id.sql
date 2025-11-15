@@ -1,15 +1,15 @@
 
-  
-  
 
-  
+
+
+
   USE [AdventureWorks2014];
-  EXEC('create view 
+  EXEC('create view
 
     [dbt_test__audit.testview_31e5b33cbc29e025b0d4475ea0062398]
-   as 
-    
-    
+   as
+
+
 
 select
     sales_order_id as unique_field,
@@ -29,14 +29,14 @@ having count(*) > 1
     case when count(*) != 0
       then 'true' else 'false' end as should_error
   from (
-    select  * from 
+    select  * from
 
     [dbt_test__audit.testview_31e5b33cbc29e025b0d4475ea0062398]
-  
+
   ) dbt_internal_test;
 
   USE [AdventureWorks2014];
-  EXEC('drop view 
+  EXEC('drop view
 
     [dbt_test__audit.testview_31e5b33cbc29e025b0d4475ea0062398]
   ;')

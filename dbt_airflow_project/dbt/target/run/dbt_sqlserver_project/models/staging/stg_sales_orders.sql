@@ -1,10 +1,10 @@
 USE [AdventureWorks2014];
-    
-    
 
-    
 
-    
+
+
+
+
     USE [AdventureWorks2014];
     EXEC('
         create view "dbo"."stg_sales_orders__dbt_tmp" as with sales_order_header as (
@@ -57,4 +57,3 @@ from sales_order_header h
 left join sales_order_detail d
     on h.sales_order_id = d.sales_order_id;
     ')
-

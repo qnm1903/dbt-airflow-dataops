@@ -1,13 +1,13 @@
 USE [AdventureWorks2014];
-    
-    
 
-    
 
-    
+
+
+
+
     USE [AdventureWorks2014];
     EXEC('
-        create view "bronze"."brnz_example__dbt_tmp" as 
+        create view "bronze"."brnz_example__dbt_tmp" as
 
 with source_data as (
     select * from "AdventureWorks2014"."Sales"."Customer"
@@ -24,4 +24,3 @@ transformed as (
 
 select * from transformed;
     ')
-

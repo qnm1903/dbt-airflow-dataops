@@ -1,16 +1,16 @@
 
-  
+
     USE [AdventureWorks2014];
     USE [AdventureWorks2014];
-    
-    
 
-    
 
-    
+
+
+
+
     USE [AdventureWorks2014];
     EXEC('
-        create view "silver"."slvr_customers__dbt_tmp__dbt_tmp_vw" as 
+        create view "silver"."slvr_customers__dbt_tmp__dbt_tmp_vw" as
 
 with bronze_customers as (
     select * from "AdventureWorks2014"."bronze"."brnz_customers"
@@ -33,17 +33,17 @@ select * from cleaned;
     ')
 
 EXEC('
-            SELECT * INTO "AdventureWorks2014"."silver"."slvr_customers__dbt_tmp" FROM "AdventureWorks2014"."silver"."slvr_customers__dbt_tmp__dbt_tmp_vw" 
+            SELECT * INTO "AdventureWorks2014"."silver"."slvr_customers__dbt_tmp" FROM "AdventureWorks2014"."silver"."slvr_customers__dbt_tmp__dbt_tmp_vw"
     OPTION (LABEL = ''dbt-sqlserver'');
 
         ')
 
-    
+
     EXEC('DROP VIEW IF EXISTS silver.slvr_customers__dbt_tmp__dbt_tmp_vw')
 
 
 
-    
+
     use [AdventureWorks2014];
     if EXISTS (
         SELECT *
@@ -54,8 +54,3 @@ EXEC('
     DROP index "silver"."slvr_customers__dbt_tmp".silver_slvr_customers__dbt_tmp_cci
     CREATE CLUSTERED COLUMNSTORE INDEX silver_slvr_customers__dbt_tmp_cci
     ON "silver"."slvr_customers__dbt_tmp"
-
-   
-
-
-  

@@ -1,13 +1,13 @@
 
-  
-  
 
-  
+
+
+
   USE [AdventureWorks2014];
-  EXEC('create view 
+  EXEC('create view
 
     [dbt_test__audit.testview_e469becceeffdd2d421a7c040b481e1c]
-   as 
+   as
 
 
 
@@ -35,14 +35,14 @@ from validation_errors
     case when count(*) != 0
       then 'true' else 'false' end as should_error
   from (
-    select  * from 
+    select  * from
 
     [dbt_test__audit.testview_e469becceeffdd2d421a7c040b481e1c]
-  
+
   ) dbt_internal_test;
 
   USE [AdventureWorks2014];
-  EXEC('drop view 
+  EXEC('drop view
 
     [dbt_test__audit.testview_e469becceeffdd2d421a7c040b481e1c]
   ;')

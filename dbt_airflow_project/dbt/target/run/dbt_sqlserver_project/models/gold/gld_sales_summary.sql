@@ -1,16 +1,16 @@
 
-  
+
     USE [AdventureWorks2014];
     USE [AdventureWorks2014];
-    
-    
 
-    
 
-    
+
+
+
+
     USE [AdventureWorks2014];
     EXEC('
-        create view "gold"."gld_sales_summary__dbt_tmp__dbt_tmp_vw" as 
+        create view "gold"."gld_sales_summary__dbt_tmp__dbt_tmp_vw" as
 
 with sales as (
     select * from "AdventureWorks2014"."silver"."slvr_sales_orders"
@@ -35,17 +35,17 @@ select * from daily_summary;
     ')
 
 EXEC('
-            SELECT * INTO "AdventureWorks2014"."gold"."gld_sales_summary__dbt_tmp" FROM "AdventureWorks2014"."gold"."gld_sales_summary__dbt_tmp__dbt_tmp_vw" 
+            SELECT * INTO "AdventureWorks2014"."gold"."gld_sales_summary__dbt_tmp" FROM "AdventureWorks2014"."gold"."gld_sales_summary__dbt_tmp__dbt_tmp_vw"
     OPTION (LABEL = ''dbt-sqlserver'');
 
         ')
 
-    
+
     EXEC('DROP VIEW IF EXISTS gold.gld_sales_summary__dbt_tmp__dbt_tmp_vw')
 
 
 
-    
+
     use [AdventureWorks2014];
     if EXISTS (
         SELECT *
@@ -56,8 +56,3 @@ EXEC('
     DROP index "gold"."gld_sales_summary__dbt_tmp".gold_gld_sales_summary__dbt_tmp_cci
     CREATE CLUSTERED COLUMNSTORE INDEX gold_gld_sales_summary__dbt_tmp_cci
     ON "gold"."gld_sales_summary__dbt_tmp"
-
-   
-
-
-  

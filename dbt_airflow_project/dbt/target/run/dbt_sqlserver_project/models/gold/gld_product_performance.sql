@@ -1,16 +1,16 @@
 
-  
+
     USE [AdventureWorks2014];
     USE [AdventureWorks2014];
-    
-    
 
-    
 
-    
+
+
+
+
     USE [AdventureWorks2014];
     EXEC('
-        create view "gold"."gld_product_performance__dbt_tmp__dbt_tmp_vw" as 
+        create view "gold"."gld_product_performance__dbt_tmp__dbt_tmp_vw" as
 
 with products as (
     select * from "AdventureWorks2014"."silver"."slvr_products"
@@ -33,20 +33,20 @@ product_sales as (
         sum(s.line_total) as total_revenue,
         avg(s.unit_price) as avg_selling_price,
         sum(s.line_total) - (sum(s.order_qty) * p.standard_cost) as total_profit,
-        case 
-            when sum(s.order_qty) > 0 then 
+        case
+            when sum(s.order_qty) > 0 then
                 (sum(s.line_total) - (sum(s.order_qty) * p.standard_cost)) / sum(s.line_total) * 100
             else 0
         end as profit_margin_pct
     from products p
     left join sales s
         on p.product_id = s.product_id
-    group by 
-        p.product_id, 
-        p.product_name, 
-        p.subcategory_name, 
-        p.color, 
-        p.list_price, 
+    group by
+        p.product_id,
+        p.product_name,
+        p.subcategory_name,
+        p.color,
+        p.list_price,
         p.standard_cost
 )
 
@@ -54,17 +54,17 @@ select * from product_sales;
     ')
 
 EXEC('
-            SELECT * INTO "AdventureWorks2014"."gold"."gld_product_performance__dbt_tmp" FROM "AdventureWorks2014"."gold"."gld_product_performance__dbt_tmp__dbt_tmp_vw" 
+            SELECT * INTO "AdventureWorks2014"."gold"."gld_product_performance__dbt_tmp" FROM "AdventureWorks2014"."gold"."gld_product_performance__dbt_tmp__dbt_tmp_vw"
     OPTION (LABEL = ''dbt-sqlserver'');
 
         ')
 
-    
+
     EXEC('DROP VIEW IF EXISTS gold.gld_product_performance__dbt_tmp__dbt_tmp_vw')
 
 
 
-    
+
     use [AdventureWorks2014];
     if EXISTS (
         SELECT *
@@ -75,8 +75,3 @@ EXEC('
     DROP index "gold"."gld_product_performance__dbt_tmp".gold_gld_product_performance__dbt_tmp_cci
     CREATE CLUSTERED COLUMNSTORE INDEX gold_gld_product_performance__dbt_tmp_cci
     ON "gold"."gld_product_performance__dbt_tmp"
-
-   
-
-
-  
