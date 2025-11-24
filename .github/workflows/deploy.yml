@@ -24,6 +24,26 @@ jobs:
       - name: Install DBT
         run: pip install dbt-sqlserver
 
+      - name: Create profiles.yml
+        run: |
+          mkdir -p dbt
+          cat <<EOF > dbt/profiles.yml
+          dbt_airflow_project:
+            target: staging
+            outputs:
+              staging:
+                type: sqlserver
+                driver: 'ODBC Driver 17 for SQL Server'
+                server: "{{ env_var('STAGING_SQL_SERVER') }}"
+                port: 1433
+                database: AdventureWorks2014_Staging
+                schema: dbo
+                user: "{{ env_var('STAGING_SQL_USER') }}"
+                password: "{{ env_var('STAGING_SQL_PASSWORD') }}"
+                threads: 4
+                trust_cert: true
+          EOF
+
       - name: Deploy to Staging
         env:
           STAGING_SQL_SERVER: ${{ secrets.STAGING_SQL_SERVER }}
@@ -59,6 +79,26 @@ jobs:
 
       - name: Install DBT
         run: pip install dbt-sqlserver
+
+      - name: Create profiles.yml
+        run: |
+          mkdir -p dbt
+          cat <<EOF > dbt/profiles.yml
+          dbt_airflow_project:
+            target: prod
+            outputs:
+              prod:
+                type: sqlserver
+                driver: 'ODBC Driver 17 for SQL Server'
+                server: "{{ env_var('PROD_SQL_SERVER') }}"
+                port: 1433
+                database: AdventureWorks2014_Prod
+                schema: dbo
+                user: "{{ env_var('PROD_SQL_USER') }}"
+                password: "{{ env_var('PROD_SQL_PASSWORD') }}"
+                threads: 4
+                trust_cert: true
+          EOF
 
       - name: Deploy to Production
         env:
