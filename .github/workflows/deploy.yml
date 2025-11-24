@@ -1,0 +1,85 @@
+name: Deploy to Environments
+
+on:
+  push:
+    branches: [develop, main]
+  workflow_dispatch:
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install DBT
+        run: pip install dbt-sqlserver
+
+      - name: Deploy to Staging
+        env:
+          STAGING_SQL_SERVER: ${{ secrets.STAGING_SQL_SERVER }}
+          STAGING_SQL_USER: ${{ secrets.STAGING_SQL_USER }}
+          STAGING_SQL_PASSWORD: ${{ secrets.STAGING_SQL_PASSWORD }}
+        run: |
+          chmod +x scripts/deploy.sh
+          ./scripts/deploy.sh staging staging
+
+      - name: Run Smoke Tests
+        env:
+          STAGING_SQL_SERVER: ${{ secrets.STAGING_SQL_SERVER }}
+          STAGING_SQL_USER: ${{ secrets.STAGING_SQL_USER }}
+          STAGING_SQL_PASSWORD: ${{ secrets.STAGING_SQL_PASSWORD }}
+        run: |
+          pip install pyodbc
+          python scripts/smoke_tests.py --server "$STAGING_SQL_SERVER" --database AdventureWorks2014_Staging --user "$STAGING_SQL_USER" --password "$STAGING_SQL_PASSWORD"
+
+  deploy-prod:
+    name: Deploy to Production
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install DBT
+        run: pip install dbt-sqlserver
+
+      - name: Deploy to Production
+        env:
+          PROD_SQL_SERVER: ${{ secrets.PROD_SQL_SERVER }}
+          PROD_SQL_USER: ${{ secrets.PROD_SQL_USER }}
+          PROD_SQL_PASSWORD: ${{ secrets.PROD_SQL_PASSWORD }}
+        run: |
+          chmod +x scripts/deploy.sh
+          ./scripts/deploy.sh production prod
+
+      - name: Run Smoke Tests
+        env:
+          PROD_SQL_SERVER: ${{ secrets.PROD_SQL_SERVER }}
+          PROD_SQL_USER: ${{ secrets.PROD_SQL_USER }}
+          PROD_SQL_PASSWORD: ${{ secrets.PROD_SQL_PASSWORD }}
+        run: |
+          pip install pyodbc
+          python scripts/smoke_tests.py --server "$PROD_SQL_SERVER" --database AdventureWorks2014_Prod --user "$PROD_SQL_USER" --password "$PROD_SQL_PASSWORD"
+
+      - name: Notify team
+        if: always()
+        run: |
+          echo "Deployment to production completed"
+          # Add Slack notification here
