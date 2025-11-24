@@ -24,13 +24,13 @@ dag = DAG(
 # Define tasks using BashOperator to execute dbt commands in the dbt container
 dbt_run = BashOperator(
     task_id="dbt_run",
-    bash_command="docker exec dbt_airflow_project-dbt-1 dbt run",
+    bash_command="docker exec -w /usr/app/dbt dbt_airflow_project-dbt-1 dbt run",
     dag=dag,
 )
 
 dbt_test = BashOperator(
     task_id="dbt_test",
-    bash_command="docker exec dbt_airflow_project-dbt-1 dbt test",
+    bash_command="docker exec -w /usr/app/dbt dbt_airflow_project-dbt-1 dbt test",
     dag=dag,
 )
 
