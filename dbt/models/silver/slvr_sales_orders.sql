@@ -4,42 +4,48 @@
     )
 }}
 
-with bronze_sales as (
+with sales_header as (
     select * from {{ ref('brnz_sales_orders') }}
 ),
 
-cleaned as (
+sales_detail as (
+    select * from {{ ref('brnz_sales_order_details') }}
+),
+
+joined as (
     select
-        sales_order_id,
-        order_detail_id,
-        order_date,
-        due_date,
-        ship_date,
-        status,
+        h.sales_order_id,
+        d.order_detail_id,
+        h.order_date,
+        h.due_date,
+        h.ship_date,
+        h.status,
         case
-            when online_order_flag = 1 then 'Online'
+            when h.online_order_flag = 1 then 'Online'
             else 'Offline'
         end as order_channel,
-        sales_order_number,
-        purchase_order_number,
-        customer_id,
-        sales_person_id,
-        territory_id,
-        product_id,
-        order_qty,
-        unit_price,
-        unit_price_discount,
-        line_total,
+        h.sales_order_number,
+        h.purchase_order_number,
+        h.customer_id,
+        h.sales_person_id,
+        h.territory_id,
+        d.product_id,
+        d.order_qty,
+        d.unit_price,
+        d.unit_price_discount,
+        d.line_total,
         -- Calculated fields
-        unit_price * order_qty as gross_amount,
-        line_total / nullif(order_qty, 0) as effective_unit_price,
+        d.unit_price * d.order_qty as gross_amount,
+        d.line_total / nullif(d.order_qty, 0) as effective_unit_price,
         case
-            when unit_price_discount > 0 then 1
+            when d.unit_price_discount > 0 then 1
             else 0
         end as has_discount
-    from bronze_sales
-    where order_qty > 0
-        and unit_price >= 0
+    from sales_header h
+    left join sales_detail d
+        on h.sales_order_id = d.sales_order_id
+    where d.order_qty > 0
+        and d.unit_price >= 0
 )
 
-select * from cleaned
+select * from joined

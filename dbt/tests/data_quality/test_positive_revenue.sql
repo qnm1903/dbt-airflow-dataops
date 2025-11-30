@@ -2,5 +2,5 @@
 SELECT
     sales_order_id,
     line_total
-FROM {{ ref('brnz_sales_orders') }}
+FROM {{ ref('brnz_sales_order_details') }}
 WHERE line_total < 0
